@@ -1,5 +1,6 @@
 package com.nowcoder.util;
 
+import com.alibaba.fastjson.JSONObject;
 import com.nowcoder.controller.LoginController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,36 @@ import java.util.Map;
 
 public class ToutiaoUtil {
     private static final Logger logger = LoggerFactory.getLogger(ToutiaoUtil.class);
+
+    //正常返回0，异常为非0
+    //把结果生成json串
+    public static String getJSONString(int code) {
+        JSONObject json = new JSONObject();
+        json.put("code", code);
+        return json.toJSONString();
+    }
+
+
+    //那边是map，要把map里每个都转成json串
+    public static String getJSONString(int code, Map<String, Object> map) {
+        JSONObject json = new JSONObject();
+        json.put("code", code);
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            json.put(entry.getKey(), entry.getValue());
+        }
+        return json.toJSONString();
+    }
+
+    //也可以直接放消息
+    public static String getJSONString(int code, String msg) {
+        JSONObject json = new JSONObject();
+        json.put("code", code);
+        json.put("msg", msg);
+        return json.toJSONString();
+    }
+
+
+
 
     //md5都有公开的算法
     public static String MD5(String key) {

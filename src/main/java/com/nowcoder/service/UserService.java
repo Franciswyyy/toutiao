@@ -24,12 +24,12 @@ public class UserService {
         Map<String, Object> map = new HashMap<String, Object>();
         if(StringUtils.isBlank(username)){
             map.put("msgname", "用户名不能为空");
-            return map;
+
         }
 
         if (StringUtils.isBlank(password)) {
             map.put("msgpwd", "密码不能为空");
-            return map;
+
         }
 
         User user = userDao.selectByName(username);
@@ -43,6 +43,7 @@ public class UserService {
 //        user.setPassword(password);  不能这样明文保存，还要加盐
         user.setSalt(UUID.randomUUID().toString().substring(0,5));
         String head = String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000));
+        user.setHeadUrl(head);
         user.setPassword(ToutiaoUtil.MD5(password+user.getSalt()));
         userDao.addUser(user);
 
