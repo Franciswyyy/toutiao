@@ -37,7 +37,10 @@ public class InitDatabaseTests {
             userDAO.updatePassword(user);
 
         }
-        
+
+        Assert.assertEquals("newapssword", userDAO.selectById(1).getPassword());
+        userDAO.deleteById(1);
+        Assert.assertNull(userDAO.selectById(1));
     }
 
 }
