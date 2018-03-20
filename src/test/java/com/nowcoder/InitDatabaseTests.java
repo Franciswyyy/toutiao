@@ -33,10 +33,11 @@ public class InitDatabaseTests {
             user.setSalt("");
             userDAO.addUser(user);
 
+            user.setPassword("newapssword");
+            userDAO.updatePassword(user);
+
         }
-
-
-
+        
     }
 
 }
