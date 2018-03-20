@@ -1,5 +1,6 @@
 package com.nowcoder;
 
+import com.nowcoder.dao.NewsDao;
 import com.nowcoder.dao.UserDao;
 import com.nowcoder.model.News;
 import com.nowcoder.model.User;
@@ -22,6 +23,9 @@ public class InitDatabaseTests {
     @Autowired
     UserDao userDAO;
 
+    @Autowired
+    NewsDao newsDao;
+
     @Test
     public void initData() {
         Random random = new Random();
@@ -36,11 +40,26 @@ public class InitDatabaseTests {
             user.setPassword("newapssword");
             userDAO.updatePassword(user);
 
+
+            //资讯
+
+            News news = new News();
+            news.setCommentCount(i);
+            Date date = new Date();
+            date.setTime(date.getTime() + 1000*3600*5*i);
+            news.setCreatedDate(date);
+            news.setImage(String.format("http://images.nowcoder.com/head/%dm.png", random.nextInt(1000)));
+            news.setLikeCount(i+1);
+            news.setUserId(i+1);
+            news.setTitle(String.format("TITLE{%d}", i));
+            news.setLink(String.format("http://www.nowcoder.com/%d.html", i));
+            newsDao.addNews(news);
+
         }
 
-        Assert.assertEquals("newapssword", userDAO.selectById(1).getPassword());
+       /* Assert.assertEquals("newapssword", userDAO.selectById(1).getPassword());
         userDAO.deleteById(1);
-        Assert.assertNull(userDAO.selectById(1));
+        Assert.assertNull(userDAO.selectById(1));*/
     }
 
 }
