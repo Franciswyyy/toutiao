@@ -31,6 +31,7 @@ public class HomeController {
 
         List<ViewObject> vos = new ArrayList<>();
 
+        //viewObject要用到两个信息
         for(News news : newsList){
             ViewObject vo = new ViewObject();
             vo.set("news", news);

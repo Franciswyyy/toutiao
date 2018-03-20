@@ -11,11 +11,9 @@
         FROM
         <include refid="table"/>
 
---复杂的逻辑操作, 如果打开首页,则显示所有,否则给一个用户我只看一个用户
         <if test="userId != 0">
             WHERE user_id = #{userId}
         </if>
-
         ORDER BY id DESC
         LIMIT #{offset},#{limit}
     </select>
