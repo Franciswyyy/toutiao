@@ -7,6 +7,7 @@ import com.nowcoder.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -24,27 +25,39 @@ public class HomeController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(path = {"/", "/index"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public String index(Model model) {
-        //取到的news
-        List<News> newsList = newsService.getLatestNews(0, 0, 10);
+    //把获取news单独提取出来写成方法，书写规范
+    private List<ViewObject> getNews(int id, int offset, int limit){
+        List<News> newsList = newsService.getLatestNews(id, offset, limit);
 
         List<ViewObject> vos = new ArrayList<>();
-
-        //viewObject要用到两个信息
         for(News news : newsList){
             ViewObject vo = new ViewObject();
             vo.set("news", news);
             vo.set("user", userService.getUser(news.getId()));
             vos.add(vo);
         }
+        return vos;
+    }
 
-        //model.addAttribute("news", newsList);
-        //model.addAttribute("users", usersList);
 
-        model.addAttribute("vos", vos);
+
+
+    //通过访问首页到链接
+    @RequestMapping(path = {"/", "/index"}, method = {RequestMethod.GET, RequestMethod.POST})
+    public String index(Model model) {
+
+        model.addAttribute("vos", getNews(0, 0 ,10));
         return "home";
         //Velocity默认返回是vm，需要修改默认返回是html
     }
 
+    //通过用户来访问  也能看的到链接
+    //即没有userid则全部显示，有的话就以用户来显示，这也就是之前写的newsdao查询的语句
+    @RequestMapping(path = {"/user/{userId}"}, method = {RequestMethod.GET, RequestMethod.POST})
+    public String userIndex(Model model, @PathVariable("userId") int userId){
+        model.addAttribute("vos", newsService.getLatestNews(userId, 0, 10));
+        return "home";
+    }
+
+    
 }

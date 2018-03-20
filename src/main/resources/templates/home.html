@@ -110,6 +110,7 @@
         <div class="jscroll-inner">
             <div class="daily">
 
+                <!--设置当前的时间，根据时间来分开，逻辑比较复杂-->
                 #set($cur_date = '')
                 #foreach($vo in $vos)
                 #if ($cur_date != $date.format('yyyy-MM-dd', $vo.news.createdDate))
@@ -120,6 +121,7 @@
             <h3 class="date">
                 <i class="fa icon-calendar"></i>
                 <span>头条资讯 &nbsp; $date.format('yyyy-MM-dd', $vo.news.createdDate)</span>
+                <!--date是一个velociy内部函数，定义配置一下自带的datetool，把时间取出来，因为数据库的时间是有分秒的-->
             </h3>
 
             <div class="posts">
