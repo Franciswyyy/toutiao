@@ -2,12 +2,14 @@ package com.nowcoder.service;
 
 import com.nowcoder.dao.UserDao;
 import com.nowcoder.model.User;
+import com.nowcoder.util.ToutiaoUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -40,7 +42,13 @@ public class UserService {
         user.setName(username);
 //        user.setPassword(password);  不能这样明文保存，还要加盐
         user.setSalt(UUID.randomUUID().toString().substring(0,5));
-        
+        String head = String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000));
+        user.setPassword(ToutiaoUtil.MD5(password+user.getSalt()));
+        userDao.addUser(user);
+
+        //正常下，登录的功能   --  注册完立马登录
+
+        return map;
     }
 
     public User getUser(int id){
