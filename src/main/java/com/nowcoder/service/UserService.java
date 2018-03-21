@@ -1,5 +1,6 @@
 package com.nowcoder.service;
 
+import com.nowcoder.dao.LoginTicketDao;
 import com.nowcoder.dao.UserDao;
 import com.nowcoder.model.User;
 import com.nowcoder.util.ToutiaoUtil;
@@ -18,6 +19,9 @@ public class UserService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private LoginTicketDao loginTicketDao;
+
     //有许多框架，可以判断字符串为空
     //调用Service，要返回数据的合法性，信息比较多
     public Map<String, Object> register(String username, String password){
@@ -29,13 +33,14 @@ public class UserService {
 
         if (StringUtils.isBlank(password)) {
             map.put("msgpwd", "密码不能为空");
-
+            return map;       //直接返回
         }
 
         User user = userDao.selectByName(username);
 
         if(user != null){
             map.put("msgname", "用户名已经被注册");
+            return map;     //直接返回
         }
 
         user = new User();
@@ -51,6 +56,39 @@ public class UserService {
 
         return map;
     }
+
+    //登录，也是密码看一遍，不能为空
+    public Map<String, Object> login(String username, String password) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        if (StringUtils.isBlank(username)) {
+            map.put("msgname", "用户名不能为空");
+            return map;
+        }
+
+        if (StringUtils.isBlank(password)) {
+            map.put("msgpwd", "密码不能为空");
+            return map;
+        }
+
+        User user = userDao.selectByName(username);
+
+        if (user == null) {
+            map.put("msgname", "用户名不存在");
+            return map;
+        }
+
+        //加密过的密码和salt不相等，则有问题
+        if (!ToutiaoUtil.MD5(password+user.getSalt()).equals(user.getPassword())) {
+            map.put("msgpwd", "密码不正确");
+            return map;
+        }
+
+        //登录成功了就要下发一个ticket给用户
+        //String ticket = addLoginTicket(user.getId());
+        //map.put("ticket", ticket);
+        return map;
+    }
+
 
     public User getUser(int id){
         return userDao.selectById(id);
