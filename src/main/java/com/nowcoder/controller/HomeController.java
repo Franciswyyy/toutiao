@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 import javax.swing.text.View;
@@ -48,9 +49,11 @@ public class HomeController {
 
     //通过访问首页到链接
     @RequestMapping(path = {"/", "/index"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public String index(Model model) {
+    public String index(Model model,
+                        @RequestParam(value ="pop",defaultValue = "0") int pop) {
 
         model.addAttribute("vos", getNews(0, 0 ,10));
+        model.addAttribute("pop", pop);
         return "home";
         //Velocity默认返回是vm，需要修改默认返回是html
     }
