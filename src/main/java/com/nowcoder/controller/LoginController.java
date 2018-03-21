@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
@@ -43,16 +44,28 @@ public class LoginController {
     }
 
 
-    //RequestMapping(path = {"/login/"}, method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(path = {"/login/"}, method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String login(Model model, @RequestParam("username") String username,
                         @RequestParam("password") String password,
-                        @RequestParam(value="rember", defaultValue = "0") int rememberme) {
+                        @RequestParam(value="rember", defaultValue = "0") int rememberme,
+                        HttpServletResponse response) {
+        //登录成功需要下发，要response响应回去，返回去
 
         try{
             Map<String, Object> map = userService.login(username, password);
-            if(map.isEmpty()){
-                return ToutiaoUtil.getJSONString(0, "登录成功");
+            //登录成功是有ticket的
+            if(map.containsKey("ticket")){
+                Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
+                response.addCookie(cookie);
+                cookie.setPath("/");   //设置路径是全站有效的
+
+                //如果有renmber，则cookie 的有效时间长一点，否则的话浏览器关闭就没了
+                if (rememberme > 0) {
+                    cookie.setMaxAge(3600*24*5);
+                }
+
+                return ToutiaoUtil.getJSONString(0, "登录成功" + map);
             }else{
                 return ToutiaoUtil.getJSONString(1, map);
             }

@@ -2,16 +2,14 @@ package com.nowcoder.service;
 
 import com.nowcoder.dao.LoginTicketDao;
 import com.nowcoder.dao.UserDao;
+import com.nowcoder.model.LoginTicket;
 import com.nowcoder.model.User;
 import com.nowcoder.util.ToutiaoUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -53,11 +51,13 @@ public class UserService {
         userDao.addUser(user);
 
         //正常下，登录的功能   --  注册完立马登录
+        String ticket = addLoginTicket(user.getId());
+        map.put("ticket", ticket);
 
         return map;
     }
 
-    //登录，也是密码看一遍，不能为空
+    //登录，也是密码看一遍，不能为空,  登录成功要加入一个ticket
     public Map<String, Object> login(String username, String password) {
         Map<String, Object> map = new HashMap<String, Object>();
         if (StringUtils.isBlank(username)) {
@@ -84,9 +84,25 @@ public class UserService {
         }
 
         //登录成功了就要下发一个ticket给用户
-        //String ticket = addLoginTicket(user.getId());
-        //map.put("ticket", ticket);
+        String ticket = addLoginTicket(user.getId());
+        map.put("ticket", ticket);
+
+        //ticket通过map返回出去
         return map;
+
+    }
+
+    //与user关联
+    private String addLoginTicket(int userId){
+        LoginTicket ticket = new LoginTicket();
+        ticket.setUserId(userId);
+        Date date = new Date();
+        date.setTime(date.getTime() + 1000*3600*24);  //24小时有效期
+        ticket.setExpired(date);
+        ticket.setStatus(0);
+        ticket.setTicket(UUID.randomUUID().toString().replaceAll("-", ""));   //uuid是有-的
+        loginTicketDao.addTicket(ticket);
+        return ticket.getTicket();
     }
 
 
