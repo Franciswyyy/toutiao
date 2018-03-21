@@ -26,6 +26,10 @@ public class NewsService {
         return newsDao.selectByUserIdAndOffset(userId, offset, limit);
     }
 
+    public News getById(int newsId) {
+        return newsDao.getById(newsId);
+    }
+
     //存图片，一些二进制的存储，把名字命好，然后存储到自己的服务器上
     public String saveImage(MultipartFile file) throws IOException {
         int dotPos = file.getOriginalFilename().lastIndexOf(".");

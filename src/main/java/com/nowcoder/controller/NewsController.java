@@ -1,6 +1,8 @@
 package com.nowcoder.controller;
 
+import com.nowcoder.model.News;
 import com.nowcoder.service.NewsService;
+import com.nowcoder.service.UserService;
 import com.nowcoder.util.ToutiaoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +24,20 @@ public class NewsController {
     @Autowired
     NewsService newsService;
 
+    @Autowired
+    UserService userService;
+
 
     //先写个入口，跳到详情页
     @RequestMapping(path = {"/news/{newsId}"},method = {RequestMethod.GET})
     public String newsDetail(@PathVariable("newsId") int newsId, Model model){
+        News news = newsService.getById(newsId);
+        if(news != null){
+            //评论
+        }
+
+        model.addAttribute("news", news);  //资讯
+        model.addAttribute("owner", userService.getUser(news.getUserId()));  //得到资讯的作者
         return "detail";
     }
 
