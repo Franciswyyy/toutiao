@@ -1,5 +1,6 @@
 package com.nowcoder.controller;
 
+import com.nowcoder.model.HostHolder;
 import com.nowcoder.model.News;
 import com.nowcoder.model.ViewObject;
 import com.nowcoder.service.NewsService;
@@ -24,6 +25,9 @@ public class HomeController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    HostHolder hostHolder;
 
     //把获取news单独提取出来写成方法，书写规范
     private List<ViewObject> getNews(int id, int offset, int limit){

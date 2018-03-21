@@ -76,4 +76,10 @@ public class LoginController {
         }
     }
 
+    //如果写了responsebody则是在页面上显示字符串， 不写就是跳转页面
+    @RequestMapping(path = {"/logout/"}, method = {RequestMethod.GET, RequestMethod.POST})
+    public String logout(@CookieValue("ticket") String ticket) {
+        userService.logout(ticket);
+        return "redirect:/";   //登出返回是首页
+    }
 }
