@@ -4,6 +4,7 @@ var oPopup = new Popup({
    content: String, 内容
    width: Number, 宽度
    close: Function, 关闭的回调
+   hasNoHeader: Boolean, true 没有头部
 });
  */
 (function (window, undefined) {
@@ -37,6 +38,8 @@ var oPopup = new Popup({
                 that.initMask();
                 // 调整z-index
                 oEl.css('zIndex', Popup.zIndex++);
+                // 去掉头部
+                oConf.hasNoHeader && oEl.find('div.pop-title').remove();
                 // 位置居中
                 that.fixPosition();
                 // 绑定窗口变化事件
