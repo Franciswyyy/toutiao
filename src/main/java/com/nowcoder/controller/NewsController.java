@@ -1,6 +1,7 @@
 package com.nowcoder.controller;
 
-import com.nowcoder.model.News;
+import com.nowcoder.model.*;
+import com.nowcoder.service.CommentService;
 import com.nowcoder.service.NewsService;
 import com.nowcoder.service.UserService;
 import com.nowcoder.util.ToutiaoUtil;
@@ -16,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class NewsController {
@@ -27,13 +30,26 @@ public class NewsController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    CommentService commentService;
+
+    @Autowired
+    HostHolder hostHolder;
 
     //先写个入口，跳到详情页
     @RequestMapping(path = {"/news/{newsId}"},method = {RequestMethod.GET})
     public String newsDetail(@PathVariable("newsId") int newsId, Model model){
         News news = newsService.getById(newsId);
         if(news != null){
-            //评论
+            List<Comment> comments = commentService.getCommentsByEntity(news.getId(), EntityType.ENTITY_NEWS);
+            List<ViewObject> commentVOs = new ArrayList<ViewObject>();
+            for (Comment comment : comments) {
+                ViewObject commentVO = new ViewObject();
+                commentVO.set("comment", comment);
+                commentVO.set("user", userService.getUser(comment.getUserId()));
+                commentVOs.add(commentVO);
+            }
+            model.addAttribute("comments", commentVOs);
         }
 
         model.addAttribute("news", news);  //资讯
