@@ -26,6 +26,11 @@ public class NewsService {
         return newsDao.selectByUserIdAndOffset(userId, offset, limit);
     }
 
+    public int addNews(News news) {
+        newsDao.addNews(news);
+        return news.getId();
+    }
+
     public News getById(int newsId) {
         return newsDao.getById(newsId);
     }
