@@ -92,7 +92,7 @@ public class UserService {
 
     }
 
-    //与user关联
+    //与user关联,一有用户登录就下发一个ticket给用户
     private String addLoginTicket(int userId){
         LoginTicket ticket = new LoginTicket();
         ticket.setUserId(userId);

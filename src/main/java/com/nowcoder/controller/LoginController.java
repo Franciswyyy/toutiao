@@ -83,8 +83,11 @@ public class LoginController {
 
     //如果写了responsebody则是在页面上显示字符串， 不写就是跳转页面
     @RequestMapping(path = {"/logout/"}, method = {RequestMethod.GET, RequestMethod.POST})
+    //@ResponseBody
     public String logout(@CookieValue("ticket") String ticket) {
         userService.logout(ticket);
         return "redirect:/";   //登出返回是首页
+
+        //return ToutiaoUtil.getJSONString(0, "成功退出来了  "+ticket);
     }
 }

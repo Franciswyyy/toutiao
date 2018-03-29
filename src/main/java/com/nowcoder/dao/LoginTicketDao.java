@@ -21,4 +21,6 @@ public interface LoginTicketDao {
     //指定两个参数
     @Update({"update ", TABLE_NAME, " set status=#{status} where ticket=#{ticket}"})
     void updateStatus(@Param("ticket") String ticket, @Param("status") int status);
+
+
 }

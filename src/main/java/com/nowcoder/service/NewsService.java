@@ -32,12 +32,12 @@ public class NewsService {
 
     //存图片，一些二进制的存储，把名字命好，然后存储到自己的服务器上
     public String saveImage(MultipartFile file) throws IOException {
-        int dotPos = file.getOriginalFilename().lastIndexOf(".");
+        int dotPos = file.getOriginalFilename().lastIndexOf(".");   //找到那个点
         if (dotPos < 0) {
             return null;
         }
-        String fileExt = file.getOriginalFilename().substring(dotPos + 1).toLowerCase();
-        if (!ToutiaoUtil.isFileAllowed(fileExt)) {
+        String fileExt = file.getOriginalFilename().substring(dotPos + 1).toLowerCase();  //判断是否是有效的名字
+        if (!ToutiaoUtil.isFileAllowed(fileExt)) {          // 后缀名是否一样
             return null;
         }
 
