@@ -3,6 +3,7 @@ package com.nowcoder.controller;
 import com.nowcoder.model.*;
 import com.nowcoder.service.CommentService;
 import com.nowcoder.service.NewsService;
+import com.nowcoder.service.QiniuService;
 import com.nowcoder.service.UserService;
 import com.nowcoder.util.ToutiaoUtil;
 import org.slf4j.Logger;
@@ -29,6 +30,9 @@ public class NewsController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    QiniuService qiniuService;
 
     @Autowired
     CommentService commentService;
@@ -78,7 +82,8 @@ public class NewsController {
     public String uploadImage(@RequestParam("file") MultipartFile file) {
         try {
             //直接从service层存图片
-            String fileUrl = newsService.saveImage(file);
+            //String fileUrl = newsService.saveImage(file);  不通过本地来上传了，通过七牛来上传
+            String fileUrl = qiniuService.saveImage(file);    //  --就是写了一个接口
             if (fileUrl == null) {
                 return ToutiaoUtil.getJSONString(1, "上传图片失败");
             }
