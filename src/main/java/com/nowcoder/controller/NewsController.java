@@ -59,8 +59,8 @@ public class NewsController {
 
 
 
-    //展示图片， 服务器给客户端 response
-    @RequestMapping(path = {"/image/"}, method = {RequestMethod.GET})
+    //展示图片， 服务器给客户端 response， 所以直接body出来，不用渲染
+    @RequestMapping(path = {"/image"}, method = {RequestMethod.GET})
     @ResponseBody
     public void getImage(@RequestParam("name") String imageName,
                          HttpServletResponse response) {

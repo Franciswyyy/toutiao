@@ -37,13 +37,16 @@ public class NewsService {
             return null;
         }
         String fileExt = file.getOriginalFilename().substring(dotPos + 1).toLowerCase();  //判断是否是有效的名字
-        if (!ToutiaoUtil.isFileAllowed(fileExt)) {          // 后缀名是否一样
+        if (!ToutiaoUtil.isFileAllowed(fileExt)) {                                        // 后缀名是否一样
             return null;
         }
 
+        //文件名全部重新命名，加上最后的扩展名
         String fileName = UUID.randomUUID().toString().replaceAll("-", "") + "." + fileExt;
         Files.copy(file.getInputStream(), new File(ToutiaoUtil.IMAGE_DIR + fileName).toPath(),
-                StandardCopyOption.REPLACE_EXISTING);
+                StandardCopyOption.REPLACE_EXISTING);   // copy的参数，  第一歌 fileinput就是读入，  如果存在就替换掉
+
+        //都已经保存本地了， 接着返回一个接口给前端
         return ToutiaoUtil.TOUTIAO_DOMAIN + "image?name=" + fileName;
     }
 }
