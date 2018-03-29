@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.UUID;
 
+
+// 优点。   可以缩图(实时，在线)。 有对图片基本处理的功能，大头像，小头像
 @Service
 public class QiniuService {
     private static final Logger logger = LoggerFactory.getLogger(QiniuService.class);
