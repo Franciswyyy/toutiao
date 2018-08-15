@@ -42,13 +42,13 @@ controller中使用注解配置，requestmapping，responsebody基本可以解�
 
 ## 前期准备
 
-AOP和IOC
+**AOP和IOC**
 ```
 IOC解决对象实例化以及依赖传递问题，解耦。
 AOP解决纵向切面问题，主要实现日志和权限控制功能。
 aspect实现切面，并且使用logger来记录日志，用该切面的切面方法来监听controller。
 ```
-配置
+**配置**
 ```
 springboot使用1.4.0
 mybatis-spring-boot-starter使用1.2.1
@@ -58,7 +58,7 @@ spring.velocity.suffix=.html 保证跳转请求转发到html上
 spring.velocity.toolbox-config-location=toolbox.xml
 ```
     
-两个小工具：
+**两个小工具**
 ```
 ViewObject:方便传递任何数据到
 VelocityDateTool:velocity自带工具类
