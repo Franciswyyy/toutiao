@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.UUID;
 
 
-//service层就是调dao层
+
 @Service
 public class NewsService {
     @Autowired
     private NewsDao newsDao;
 
-    //最新的新闻读取出来，服务定义的接口通用些
+
     public List<News> getLatestNews(int userId, int offset, int limit) {
         return newsDao.selectByUserIdAndOffset(userId, offset, limit);
     }
@@ -35,7 +35,7 @@ public class NewsService {
         return newsDao.getById(newsId);
     }
 
-    //存图片，一些二进制的存储，把名字命好，然后存储到自己的服务器上
+
     public String saveImage(MultipartFile file) throws IOException {
         // xxx.xxx.jpg
         int dotPos = file.getOriginalFilename().lastIndexOf(".");
@@ -52,7 +52,7 @@ public class NewsService {
         Files.copy(file.getInputStream(), new File(ToutiaoUtil.IMAGE_DIR + fileName).toPath(),
                 StandardCopyOption.REPLACE_EXISTING);
 
-        //都已经保存本地了， 接着返回一个接口给前端
+
         return ToutiaoUtil.TOUTIAO_DOMAIN + "image?name=" + fileName;
     }
 
