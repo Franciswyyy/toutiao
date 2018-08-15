@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
+// 登陆验证
 @Component
 public class PassportInterceptor implements HandlerInterceptor {
 
@@ -45,7 +46,7 @@ public class PassportInterceptor implements HandlerInterceptor {
             LoginTicket loginTicket = loginTicketDao.selectByTicket(ticket);
             //用户没登录， 在这之前，说明过期了， 状态不等于0， 也是过期的
             if (loginTicket == null || loginTicket.getExpired().before(new Date()) || loginTicket.getStatus() != 0) {
-                return true;   //就直接过去了，不用管
+                return true;   //就直接过去了，
             }
 
             //如果我知道有这个人，就需要记录下来这个人了。用户保存起来

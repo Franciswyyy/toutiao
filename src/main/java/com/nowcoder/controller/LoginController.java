@@ -20,7 +20,6 @@ public class LoginController {
     @Autowired
     UserService userService;
 
-    //首先用户提交，需要它的用户名,密码,是否记住
     @RequestMapping(path = {"/reg/"}, method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String reg(Model model, @RequestParam("username") String username,
@@ -30,6 +29,7 @@ public class LoginController {
         try {
             Map<String, Object> map = userService.register(username, password);
             if (map.containsKey("ticket")) {
+                // 包含ticket登陆成功，否则失败
                 Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
                 cookie.setPath("/");
                 if (rememberme > 0) {
@@ -55,7 +55,6 @@ public class LoginController {
                         @RequestParam("password") String password,
                         @RequestParam(value="rember", defaultValue = "0") int rememberme,
                         HttpServletResponse response) {
-        //登录成功需要下发，要response响应回去，返回去
 
         try{
             Map<String, Object> map = userService.login(username, password);

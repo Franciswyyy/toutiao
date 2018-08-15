@@ -20,44 +20,40 @@ public class UserService {
     @Autowired
     private LoginTicketDao loginTicketDao;
 
-    //有许多框架，可以判断字符串为空
-    //调用Service，要返回数据的合法性，信息比较多
     public Map<String, Object> register(String username, String password){
         Map<String, Object> map = new HashMap<String, Object>();
         if(StringUtils.isBlank(username)){
             map.put("msgname", "用户名不能为空");
-
         }
 
         if (StringUtils.isBlank(password)) {
             map.put("msgpwd", "密码不能为空");
-            return map;       //直接返回
+            return map;
         }
 
         User user = userDao.selectByName(username);
 
         if(user != null){
             map.put("msgname", "用户名已经被注册");
-            return map;     //直接返回
+            return map;
         }
 
         user = new User();
         user.setName(username);
-//        user.setPassword(password);  不能这样明文保存，还要加盐
+//      user.setPassword(password);  不能这样明文保存，还要加盐
         user.setSalt(UUID.randomUUID().toString().substring(0,5));
         String head = String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000));
         user.setHeadUrl(head);
         user.setPassword(ToutiaoUtil.MD5(password+user.getSalt()));
         userDao.addUser(user);
 
-        //正常下，登录的功能   --  注册完立马登录
+        //服务器下发一个token
         String ticket = addLoginTicket(user.getId());
         map.put("ticket", ticket);
 
         return map;
     }
 
-    //登录，也是密码看一遍，不能为空,  登录成功要加入一个ticket
     public Map<String, Object> login(String username, String password) {
         Map<String, Object> map = new HashMap<String, Object>();
         if (StringUtils.isBlank(username)) {
@@ -77,7 +73,6 @@ public class UserService {
             return map;
         }
 
-        //加密过的密码和salt不相等，则有问题
         if (!ToutiaoUtil.MD5(password+user.getSalt()).equals(user.getPassword())) {
             map.put("msgpwd", "密码不正确");
             return map;
@@ -87,7 +82,6 @@ public class UserService {
         String ticket = addLoginTicket(user.getId());
         map.put("ticket", ticket);
 
-        //ticket通过map返回出去
         return map;
 
     }
