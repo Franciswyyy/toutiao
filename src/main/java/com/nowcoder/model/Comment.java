@@ -2,7 +2,7 @@ package com.nowcoder.model;
 
 import java.util.Date;
 
-//评论
+//评论实体类
 public class Comment {
     private int id;
     private int userId;

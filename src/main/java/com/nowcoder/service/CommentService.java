@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 public class CommentService {
-    //private static final Logger logger = LoggerFactory.getLogger(QiniuService.class);
+
 
     @Autowired
     CommentDao commentDao;

@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -41,11 +42,12 @@ public class NewsController {
     @Autowired
     HostHolder hostHolder;
 
-    //先写个入口，跳到详情页
+
     @RequestMapping(path = {"/news/{newsId}"},method = {RequestMethod.GET})
     public String newsDetail(@PathVariable("newsId") int newsId, Model model){
         News news = newsService.getById(newsId);
         if(news != null){
+            // 这条资讯关联的所有评论都找出来
             List<Comment> comments = commentService.getCommentsByEntity(news.getId(), EntityType.ENTITY_NEWS);
             List<ViewObject> commentVOs = new ArrayList<ViewObject>();
             for (Comment comment : comments) {
@@ -62,7 +64,30 @@ public class NewsController {
         return "detail";
     }
 
+    @RequestMapping(path = {"/addComment"}, method = {RequestMethod.POST})
+    public String addComment(@RequestParam("newsId") int newsId,
+                             @RequestParam("content") String content) {
+        try {
+            content = HtmlUtils.htmlEscape(content);
+            // 过滤content
+            Comment comment = new Comment();
+            comment.setUserId(hostHolder.getUser().getId());
+            comment.setContent(content);
+            comment.setEntityId(newsId);
+            comment.setEntityType(EntityType.ENTITY_NEWS);
+            comment.setCreatedDate(new Date());
+            comment.setStatus(0);
 
+            commentService.addComment(comment);
+            // 更新news里的评论数量
+            int count = commentService.getCommentCount(comment.getEntityId(), comment.getEntityType());
+            newsService.updateCommentCount(comment.getEntityId(), count);
+            // 怎么异步化
+        } catch (Exception e) {
+            logger.error("增加评论失败" + e.getMessage());
+        }
+        return "redirect:/news/" + String.valueOf(newsId);
+    }
 
     //展示图片， 服务器给客户端 response， 所以直接body出来，不用渲染
     @RequestMapping(path = {"/image"}, method = {RequestMethod.GET})
@@ -83,8 +108,8 @@ public class NewsController {
     public String uploadImage(@RequestParam("file") MultipartFile file) {
         try {
             //直接从service层存图片
-            //String fileUrl = newsService.saveImage(file);  不通过本地来上传了，通过七牛来上传
-            String fileUrl = qiniuService.saveImage(file);    //  --就是写了一个接口
+            //String fileUrl = newsService.saveImage(file);
+            String fileUrl = qiniuService.saveImage(file);    //  就是写了一个接口
             if (fileUrl == null) {
                 return ToutiaoUtil.getJSONString(1, "上传图片失败");
             }

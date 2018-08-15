@@ -32,6 +32,7 @@ public class MessageController {
     public String conversationDetail(Model model, @RequestParam("conversationId") String conversationId) {
         try {
             List<ViewObject> messages = new ArrayList<>();
+            // 展示10条消息
             List<Message> conversationList = messageService.getConversationDetail(conversationId, 0, 10);
             for (Message msg : conversationList) {
                 ViewObject vo = new ViewObject();
@@ -61,6 +62,7 @@ public class MessageController {
             for (Message msg : conversationList) {
                 ViewObject vo = new ViewObject();
                 vo.set("conversation", msg);
+                // 交互的人是谁，可能是from也可能是to。能知道对方的Id是多少？
                 int targetId = msg.getFromId() == localUserId ? msg.getToId() : msg.getFromId();
                 User user = userService.getUser(targetId);
                 vo.set("headUrl", user.getHeadUrl());
