@@ -1,5 +1,8 @@
 package com.nowcoder.controller;
 
+import com.nowcoder.async.EventModel;
+import com.nowcoder.async.EventProducer;
+import com.nowcoder.async.EventType;
 import com.nowcoder.service.UserService;
 import com.nowcoder.util.ToutiaoUtil;
 import org.slf4j.Logger;
@@ -19,6 +22,9 @@ public class LoginController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    EventProducer eventProducer;
 
     @RequestMapping(path = {"/reg/"}, method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
@@ -61,13 +67,17 @@ public class LoginController {
             //登录成功是有ticket的
             if(map.containsKey("ticket")){
                 Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
-                response.addCookie(cookie);
                 cookie.setPath("/");   //设置路径是全站有效的
 
                 //如果有renmber，则cookie 的有效时间长一点，否则的话浏览器关闭就没了
                 if (rememberme > 0) {
                     cookie.setMaxAge(3600*24*5);
                 }
+                response.addCookie(cookie);
+
+                eventProducer.fireEvent(new EventModel(EventType.LOGIN)
+                        .setActorId((int) map.get("userId"))
+                        .setExt("username", username).setExt("email", "zjuyxy@qq.com"));
 
                 return ToutiaoUtil.getJSONString(0, "登录成功" + map);
             }else{

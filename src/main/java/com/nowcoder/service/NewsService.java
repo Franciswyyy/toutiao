@@ -60,4 +60,8 @@ public class NewsService {
         return newsDao.updateCommentCount(id, count);
     }
 
+    public int updateLikeCount(int id, int count) {
+        return newsDao.updateLikeCount(id, count);
+    }
+
 }
