@@ -5,6 +5,7 @@ import com.nowcoder.async.EventModel;
 import com.nowcoder.async.EventType;
 import com.nowcoder.model.Message;
 import com.nowcoder.service.MessageService;
+import com.nowcoder.util.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,8 @@ public class LoginExceptionHandler implements EventHandler {
     @Autowired
     MessageService messageService;
 
-
+    @Autowired
+    MailSender mailSender;
 
 
     @Override
@@ -30,6 +32,10 @@ public class LoginExceptionHandler implements EventHandler {
         messageService.addMessage(message);
 
 
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("username", model.getExt("username"));
+        mailSender.sendWithHTMLTemplate(model.getExt("email"), "登陆异常", "mails/welcome.html",
+                map);
     }
 
     @Override
